@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class UserQueryListRepository implements IRepository<User, Integer> {
+public class UserQueryListRepository implements IQueryRepository<User, Integer> {
     private static final List<User> users = new ArrayList<>();
 
     @PostConstruct
@@ -31,13 +31,5 @@ public class UserQueryListRepository implements IRepository<User, Integer> {
 
     public List<User> findAll() {
         return users;
-    }
-
-    public User save(User entity) {
-        throw new RuntimeException("UserQueryListRepository 클래스는 Query 만 지원합니다 = INSERT(Command) 미지원");
-    }
-
-    public void delete(Integer id) {
-        throw new RuntimeException("UserQueryListRepository 클래스는 Query 만 지원합니다 = DELETE(Command) 미지원");
     }
 }

@@ -14,8 +14,8 @@ public class UserService implements IUserService {
     private final IRepository<User, Integer> userRepository;
 
     @Autowired
-    public UserService(IRepository<User, Integer> userQueryListRepository) {
-        this.userRepository = userQueryListRepository;
+    public UserService(IRepository<User, Integer> userListRepository) {
+        this.userRepository = userListRepository;
     }
 
     public UserResponseDto findById(Integer id) {
