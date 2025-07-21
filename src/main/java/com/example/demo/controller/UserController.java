@@ -4,6 +4,7 @@ import com.example.demo.controller.dto.UserCreateRequestDto;
 import com.example.demo.controller.dto.UserResponseDto;
 import com.example.demo.service.IUserService;
 import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,9 @@ import java.util.*;
 public class UserController {
     private final IUserService userService;
 
-    public UserController() {
-        this.userService = new UserService();
+    @Autowired
+    public UserController(IUserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/{id}")

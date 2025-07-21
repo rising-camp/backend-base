@@ -5,6 +5,7 @@ import com.example.demo.controller.dto.UserResponseDto;
 import com.example.demo.repository.UserListRepository;
 import com.example.demo.repository.IRepository;
 import com.example.demo.repository.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +14,9 @@ import java.util.List;
 public class UserService implements IUserService {
     private final IRepository<User, Integer> userRepository;
 
-    public UserService() {
-        this.userRepository = new UserListRepository();
+    @Autowired
+    public UserService(IRepository<User, Integer> userListRepository) {
+        this.userRepository = userListRepository;
     }
 
     public UserResponseDto findById(Integer id) {
