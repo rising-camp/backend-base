@@ -47,7 +47,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
 //      Controller 는 단지 요청을 받고 실제 로직에 해당하는건 모두 Service 에 이관하고, 돌려받은 결과를 단지 반환할뿐이다.
-        userService.delete(id);
+        ExceptionHandler.execute(() -> userService.delete(id));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
