@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.controller.dto.UserCreateRequestDto;
 import com.example.demo.controller.dto.UserResponseDto;
+import com.example.demo.exception.ExceptionHandler;
 import com.example.demo.service.IUserService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/api/users")
@@ -24,21 +26,36 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> user(@PathVariable Integer id) {
 //      Controller 는 단지 요청을 받고 실제 로직에 해당하는건 모두 Service 에 이관하고, 돌려받은 결과를 단지 반환할뿐이다.
-        UserResponseDto responseDto = userService.findById(id);
+        UserResponseDto responseDto = ExceptionHandler.execute(new Supplier<UserResponseDto>() {
+            @Override
+            public UserResponseDto get() {
+                return userService.findById(id);
+            }
+        });
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("")
     public ResponseEntity<List<UserResponseDto>> users() {
 //      Controller 는 단지 요청을 받고 실제 로직에 해당하는건 모두 Service 에 이관하고, 돌려받은 결과를 단지 반환할뿐이다.
-        List<UserResponseDto> responseDtos = userService.findAll();
+        List<UserResponseDto> responseDtos = ExceptionHandler.execute(new Supplier<List<UserResponseDto>>() {
+            @Override
+            public List<UserResponseDto> get() {
+                return userService.findAll();
+            }
+        });
         return ResponseEntity.ok(responseDtos);
     }
 
     @PostMapping("")
     public ResponseEntity<UserResponseDto> create(@RequestBody UserCreateRequestDto request) {
 //      Controller 는 단지 요청을 받고 실제 로직에 해당하는건 모두 Service 에 이관하고, 돌려받은 결과를 단지 반환할뿐이다.
-        UserResponseDto responseDto = userService.save(request);
+        UserResponseDto responseDto = ExceptionHandler.execute(new Supplier<UserResponseDto>() {
+            @Override
+            public UserResponseDto get() {
+                return userService.save(request);
+            }
+        });
         return ResponseEntity.ok(responseDto);
     }
 
