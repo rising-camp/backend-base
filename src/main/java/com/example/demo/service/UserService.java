@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.controller.dto.UserCreateRequestDto;
 import com.example.demo.controller.dto.UserResponseDto;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.UserMapRepository;
 import com.example.demo.repository.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +10,10 @@ import java.util.List;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+    private final UserMapRepository userRepository;
 
     public UserService() {
-        this.userRepository = new UserRepository();
+        this.userRepository = new UserMapRepository();
     }
 
     public UserResponseDto findById(Integer id) {

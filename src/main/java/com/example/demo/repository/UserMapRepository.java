@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
-public class UserRepository {
+public class UserMapRepository {
     private static final Map<Integer, User> users = new HashMap<>();
 
     @PostConstruct
