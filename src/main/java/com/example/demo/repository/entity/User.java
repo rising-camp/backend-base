@@ -1,4 +1,4 @@
-package com.example.demo.controller.entity;
+package com.example.demo.repository.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
