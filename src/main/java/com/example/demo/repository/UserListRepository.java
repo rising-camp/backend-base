@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
-public class UserListRepository {
+public class UserListRepository implements IRepository<User, Integer> {
     private static final List<User> users = new ArrayList<>();
 
     @PostConstruct

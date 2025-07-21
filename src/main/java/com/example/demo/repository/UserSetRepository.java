@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
-public class UserSetRepository {
+public class UserSetRepository implements IRepository<User, Integer> {
     private static final Set<User> users = new HashSet<>();
 
     @PostConstruct

@@ -3,14 +3,15 @@ package com.example.demo.service;
 import com.example.demo.controller.dto.UserCreateRequestDto;
 import com.example.demo.controller.dto.UserResponseDto;
 import com.example.demo.repository.UserListRepository;
+import com.example.demo.repository.IRepository;
 import com.example.demo.repository.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserService {
-    private final UserListRepository userRepository;
+public class UserService implements IUserService {
+    private final IRepository<User, Integer> userRepository;
 
     public UserService() {
         this.userRepository = new UserListRepository();
