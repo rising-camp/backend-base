@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.controller.common.exceptions.BaseException;
 import com.example.demo.controller.post.dto.PostCreateRequestDto;
 import com.example.demo.controller.post.dto.PostResponseDto;
 import com.example.demo.repository.post.PostRepository;
@@ -7,6 +8,7 @@ import com.example.demo.repository.post.entity.Post;
 import com.example.demo.repository.user.UserRepository;
 import com.example.demo.repository.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,7 @@ public class PostService {
     @Transactional
     public PostResponseDto findById(Integer id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("게시글이 데이터베이스 내 존재하지 않습니다. 게시글 id : " + id));
+                .orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND, "게시글이 데이터베이스 내 존재하지 않습니다. 게시글 id : " + id));
         return PostResponseDto.from(post);
     }
 
@@ -38,7 +40,7 @@ public class PostService {
         // 작성자 User 조회
         Integer userId = request.getUserId();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("유저가 데이터베이스 내 존재하지 않습니다. 유저 id : " + userId));
+                .orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND, "유저가 데이터베이스 내 존재하지 않습니다. 유저 id : " + userId));
         // 작성한 Post 저장
         Post post = Post.create(
                 request.getTitle(),
@@ -52,7 +54,7 @@ public class PostService {
     @Transactional
     public void delete(Integer id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("게시글이 데이터베이스 내 존재하지 않습니다. 게시글 id : " + id));
+                .orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND, "게시글이 데이터베이스 내 존재하지 않습니다. 게시글 id : " + id));
         postRepository.deleteById(id);
     }
 }

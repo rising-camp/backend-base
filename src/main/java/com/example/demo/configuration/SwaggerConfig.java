@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Arrays;
 
@@ -31,7 +32,7 @@ public class SwaggerConfig {
     public GroupedOpenApi grouping() {
         String[] paths = {"/**"};
         return GroupedOpenApi.builder()
-                .group("라이징캠프 수업을 위한 데모 서비스 모든 API 그룹")
+                .group("spec")
                 .pathsToMatch(paths)
                 .build();
     }

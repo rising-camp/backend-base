@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
+import com.example.demo.controller.common.exceptions.BaseException;
 import com.example.demo.controller.user.dto.UserCreateRequestDto;
 import com.example.demo.controller.user.dto.UserResponseDto;
 import com.example.demo.repository.user.UserRepository;
 import com.example.demo.repository.user.entity.User;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +28,7 @@ public class UserService {
     @Transactional
     public UserResponseDto findById(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("유저가 데이터베이스 내 존재하지 않습니다. 유저 id : " + id));
+                .orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND, "유저가 데이터베이스 내 존재하지 않습니다. 유저 id : " + id));
         return UserResponseDto.from(user);
     }
 
