@@ -23,7 +23,7 @@ public class User {
     private String specialty;
     private LocalDateTime createdAt;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Allocated> allocates;
 
 //  @OneToMany(fetch = FetchType.LAZY, mappedBy = "created_by")
