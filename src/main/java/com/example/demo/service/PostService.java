@@ -7,13 +7,16 @@ import com.example.demo.repository.post.PostRepository;
 import com.example.demo.repository.post.entity.Post;
 import com.example.demo.repository.user.UserRepository;
 import com.example.demo.repository.user.entity.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
+@Validated
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -36,7 +39,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto save(PostCreateRequestDto request) {
+    public PostResponseDto save(@Valid PostCreateRequestDto request) {
         // 작성자 User 조회
         Integer userId = request.getUserId();
         User user = userRepository.findById(userId)

@@ -37,25 +37,25 @@ public class SwaggerConfig {
                 .build();
     }
 
-//  @Bean
-//  public GroupedOpenApi userApi() {
-//      String[] packagesToScan = {"com.example.controller.user"};
-//      String[] paths = {"/api/v1/users/**"};
-//      return GroupedOpenApi.builder()
-//              .group("유저 관리 API")
-////            .packagesToScan(packagesToScan)
-//              .pathsToMatch(paths)
-//              .build();
-//  }
+    @Bean
+    public GroupedOpenApi userApi() {
+        String[] packagesToScan = {"com.example.controller.user"};
+        String[] paths = {"/api/v1/users/**"};
+        return GroupedOpenApi.builder()
+                .group("유저 관리 API")
+//            .packagesToScan(packagesToScan)
+                .pathsToMatch(paths)
+                .build();
+    }
 
-//  @Bean
-//  public GroupedOpenApi postApi() {
-//      String[] packagesToScan = {"com.example.controller.post"};
-//      String[] paths = {"/api/v1/posts/**"};
-//      return GroupedOpenApi.builder()
-//              .group("글 관리 API")
-////            .packagesToScan(packagesToScan)
-//              .pathsToMatch(paths)
-//              .build();
-//  }
+    @Bean
+    public GroupedOpenApi postApi() {
+        String[] packagesToScan = {"com.example.controller.post"};
+        String[] paths = {"/api/v1/posts/**"};
+        return GroupedOpenApi.builder()
+                .group("글 관리 API")
+//            .packagesToScan(packagesToScan)
+                .pathsToMatch(paths)
+                .build();
+    }
 }

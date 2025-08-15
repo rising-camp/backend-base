@@ -5,9 +5,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.spi.LoggingEventBuilder;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +65,15 @@ public class ExceptionAdvice {
         return this.build(HttpStatus.BAD_REQUEST, message);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content)
+    public ProblemDetail handle(ConstraintViolationException exception) {
+        String message = this.stringify(exception);
+        log.warn(message, exception);
+        return this.build(HttpStatus.BAD_REQUEST, message);
+    }
+
     @ExceptionHandler(HandlerMethodValidationException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content)
@@ -101,9 +113,20 @@ public class ExceptionAdvice {
     private String stringify(MethodArgumentNotValidException exception) {
         StringBuilder errorMessageBuilder = new StringBuilder();
         for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
-            errorMessageBuilder.append(fieldError.getDefaultMessage()).append("\n");
+            errorMessageBuilder.append(fieldError.getField()).append(": ");
+            errorMessageBuilder.append(fieldError.getDefaultMessage()).append(", ");
         }
-        errorMessageBuilder.deleteCharAt(errorMessageBuilder.length() - 1);
+        errorMessageBuilder.deleteCharAt(errorMessageBuilder.length() - 2);
+        return errorMessageBuilder.toString();
+    }
+
+    private String stringify(ConstraintViolationException exception) {
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        for (ConstraintViolation fieldError : exception.getConstraintViolations()) {
+            errorMessageBuilder.append(fieldError.getPropertyPath()).append(": ");
+            errorMessageBuilder.append(fieldError.getMessage()).append(", ");
+        }
+        errorMessageBuilder.deleteCharAt(errorMessageBuilder.length() - 2);
         return errorMessageBuilder.toString();
     }
 
@@ -113,10 +136,12 @@ public class ExceptionAdvice {
                 .map(MessageSourceResolvable::getDefaultMessage)
                 .toList();
         StringBuilder errorMessageBuilder = new StringBuilder();
-        for (String message : errorMessages) {
-            errorMessageBuilder.append(message).append("\n");
+        for (MessageSourceResolvable fieldError : exception.getAllErrors()) {
+            DefaultMessageSourceResolvable message = (DefaultMessageSourceResolvable) fieldError.getArguments()[0];
+            errorMessageBuilder.append(message.getDefaultMessage()).append(": ");
+            errorMessageBuilder.append(fieldError.getDefaultMessage()).append(", ");
         }
-        errorMessageBuilder.deleteCharAt(errorMessageBuilder.length() - 1);
+        errorMessageBuilder.deleteCharAt(errorMessageBuilder.length() - 2);
         return errorMessageBuilder.toString();
     }
 }

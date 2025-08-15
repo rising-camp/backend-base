@@ -7,11 +7,14 @@ import com.example.demo.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,7 +47,7 @@ public class PostController {
 
     @PostMapping("")
     @Operation(summary = "글 작성", description = "글을 작성합니다. 누가 작성했는지 유저 아이디를 같이 요청합니다.")
-    public ResponseEntity<PostResponseDto> create(@RequestBody PostCreateRequestDto request) {
+    public ResponseEntity<PostResponseDto> create(@RequestBody @Valid PostCreateRequestDto request) {
         PostResponseDto post = postService.save(request);
         return ResponseEntity.ok(post);
     }
@@ -53,7 +56,7 @@ public class PostController {
     @Operation(summary = "글 삭제", description = "글을 삭제합니다. 요청에 주어진 PostId 에 해당하는 글을 삭제합니다.")
     public ResponseEntity<Void> delete(
             @Schema(description = "포스트 아이디", example = "1")
-            @PathVariable Integer id
+            @PathVariable @Valid @Min(5) Integer id
     ) {
         postService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
