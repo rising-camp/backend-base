@@ -14,6 +14,8 @@ public interface UserRepository extends JpaRepository<User, Integer>, IUserRepos
 
     Optional<User> findById(Integer id);
 
+    Optional<User> findByUsername(String username);
+
     List<User> findAll();
 
     User save(User entity);

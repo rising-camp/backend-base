@@ -10,6 +10,7 @@ import lombok.Getter;
 public class UserResponseDto {
     private Integer id;
     private String username;
+    private String source;
     private String name;
     private String job;
     private String specialty;
@@ -18,6 +19,7 @@ public class UserResponseDto {
         return new UserResponseDto(
                 entity.getId(),
                 entity.getUsername(),
+                entity.getSource().name(),
                 entity.getName(),
                 entity.getJob(),
                 entity.getSpecialty()

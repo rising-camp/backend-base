@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,12 +35,14 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping("")
     public ResponseEntity<UserResponseDto> create(@RequestBody UserCreateRequestDto request) {
         UserResponseDto user = userService.save(request);
         return ResponseEntity.ok(user);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         userService.delete(id);
