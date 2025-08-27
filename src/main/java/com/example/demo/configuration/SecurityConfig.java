@@ -23,6 +23,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 //  private final UsernamePasswordAuthenticationProvider authenticationProvider;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2UserService oAuth2UserService;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final JwtProvider jwtProvider;
     private final CorsConfigurationSource reactConfigurationSource;
@@ -41,10 +43,17 @@ public class SecurityConfig {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login")
 //              .logoutSuccessHandler(logoutSuccessHandler())
-//              .invalidateHttpSession(true)
-//              .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .deleteCookies("accessToken")
                 .clearAuthentication(true)
+        );
+//      http.oauth2Login(Customizer.withDefaults());
+        http.oauth2Login(oauth2Login -> oauth2Login
+                .loginPage("/login")
+//              .authorizationEndpoint(endpoint -> endpoint.baseUri("/oauth2/authorization"))
+                .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
+                .successHandler(oAuth2SuccessHandler)
         );
 //      http.httpBasic(Customizer.withDefaults());
         http.addFilterBefore(

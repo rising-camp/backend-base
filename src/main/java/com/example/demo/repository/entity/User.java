@@ -1,6 +1,7 @@
 package com.example.demo.repository.entity;
 
 import com.example.demo.repository.entity.vo.Source;
+import com.example.demo.security.vo.OAuth2Resource;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,6 +35,21 @@ public class User implements UserDetails {
     public final static SimpleGrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
     public final static List<SimpleGrantedAuthority> SIMPLE_ROLES = List.of(ROLE_USER);
     public final static List<SimpleGrantedAuthority> ADMIN_ROLES = List.of(ROLE_USER, ROLE_ADMIN);
+
+    public static User create(OAuth2Resource resource) {
+        return new User(
+                null,
+                resource.getProviderId().toString(),
+                null,
+                resource.getProvider(),
+                null,
+                null,
+                null,
+                null,
+                LocalDateTime.now(),
+                SIMPLE_ROLES
+        );
+    }
 
     public static User create(String username, String password, String name, Integer age, String job, String specialty) {
         return new User(
