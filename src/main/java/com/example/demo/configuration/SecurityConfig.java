@@ -1,6 +1,6 @@
 package com.example.demo.configuration;
 
-import com.example.demo.security.UsernamePasswordAuthenticationProvider;
+import com.example.demo.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,41 +12,64 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity//(debug = true)
 @EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final UsernamePasswordAuthenticationProvider authenticationProvider;
+//  private final UsernamePasswordAuthenticationProvider authenticationProvider;
+    private final JwtAuthenticationProvider jwtAuthenticationProvider;
+    private final JwtProvider jwtProvider;
     private final CorsConfigurationSource reactConfigurationSource;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //      (3) 인증 및 인가 외 모든 종류의 SecurityFilterChain 보안 설정 규칙 적용
-//      http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable);
 //      http.cors((cors) -> cors.configurationSource(reactConfigurationSource));
 
+//      http.formLogin(AbstractHttpConfigurer::disable);
         http.formLogin(form -> form
                 .loginPage("/login")
                 .permitAll());
         http.logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login"));
+                .logoutSuccessUrl("/login")
+//              .logoutSuccessHandler(logoutSuccessHandler())
+//              .invalidateHttpSession(true)
+//              .deleteCookies("JSESSIONID")
+                .deleteCookies("accessToken")
+                .clearAuthentication(true)
+        );
 //      http.httpBasic(Customizer.withDefaults());
+        http.addFilterBefore(
+                /* Filter */ new JwtAuthenticationFilter(authenticationManager(http)),
+                /* Target */ JwtAuthorizationFilter.class
+        );
+        http.addFilterBefore(
+                /* Filter */ new JwtAuthorizationFilter(authenticationManager(http), jwtProvider),
+                /* Target */ UsernamePasswordAuthenticationFilter.class
+        );
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.authorizeHttpRequests(request -> request.requestMatchers("/").authenticated());
+        http.authorizeHttpRequests(request -> request.requestMatchers("/api/login").permitAll());
         http.authorizeHttpRequests(request -> request.requestMatchers("/api/**").authenticated());
+        http.authorizeHttpRequests(request -> request.requestMatchers("/").authenticated());
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(authenticationProvider);
+//      authenticationManagerBuilder.authenticationProvider(authenticationProvider);
+        authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider);
         return authenticationManagerBuilder.build();
     }
 
